@@ -1,0 +1,154 @@
+filters:
+  and:
+    - file.inFolder("{{FOLDER}}/Meals")
+    - type == "meal"
+summaries:
+  "% of 2000 kcal": (values.sum() / 2000 * 100).round()
+  "% of 50 g protein": (values.sum() / 50 * 100).round()
+  "% of 275 g carbs": (values.sum() / 275 * 100).round()
+  "% of 78 g fat": (values.sum() / 78 * 100).round()
+  "% of 28 g fiber": (values.sum() / 28 * 100).round()
+  "% of 2300 mg sodium": (values.sum() / 2300 * 100).round()
+properties:
+  file.name:
+    displayName: Meal
+  note.date:
+    displayName: Date
+  note.time:
+    displayName: Time
+  note.meal:
+    displayName: Kind
+  note.calories:
+    displayName: kcal
+  note.protein_g:
+    displayName: Protein g
+  note.carbs_g:
+    displayName: Carbs g
+  note.fat_g:
+    displayName: Fat g
+  note.fiber_g:
+    displayName: Fiber g
+  note.sugar_g:
+    displayName: Sugar g
+  note.sat_fat_g:
+    displayName: Sat fat g
+  note.sodium_mg:
+    displayName: Sodium mg
+  note.confidence:
+    displayName: Confidence
+views:
+  - type: table
+    name: Today
+    filters:
+      and:
+        - date == today()
+    order:
+      - time
+      - meal
+      - file.name
+      - calories
+      - protein_g
+      - carbs_g
+      - fat_g
+      - fiber_g
+      - confidence
+    sort:
+      - property: time
+        direction: ASC
+    summaries:
+      calories: Sum
+      protein_g: Sum
+      carbs_g: Sum
+      fat_g: Sum
+      fiber_g: Sum
+  - type: table
+    name: Today vs targets
+    filters:
+      and:
+        - date == today()
+    order:
+      - time
+      - file.name
+      - calories
+      - protein_g
+      - carbs_g
+      - fat_g
+      - fiber_g
+      - sodium_mg
+    sort:
+      - property: time
+        direction: ASC
+    summaries:
+      calories: "% of 2000 kcal"
+      protein_g: "% of 50 g protein"
+      carbs_g: "% of 275 g carbs"
+      fat_g: "% of 78 g fat"
+      fiber_g: "% of 28 g fiber"
+      sodium_mg: "% of 2300 mg sodium"
+  - type: table
+    name: Last 7 days
+    filters:
+      and:
+        - date >= today() - "6d"
+    groupBy:
+      property: date
+      direction: DESC
+    order:
+      - time
+      - file.name
+      - calories
+      - protein_g
+      - carbs_g
+      - fat_g
+      - fiber_g
+    sort:
+      - property: time
+        direction: ASC
+    summaries:
+      calories: Sum
+      protein_g: Sum
+      carbs_g: Sum
+      fat_g: Sum
+      fiber_g: Sum
+  - type: table
+    name: All meals
+    groupBy:
+      property: date
+      direction: DESC
+    order:
+      - time
+      - meal
+      - file.name
+      - calories
+      - protein_g
+      - carbs_g
+      - fat_g
+      - fiber_g
+      - sugar_g
+      - sat_fat_g
+      - sodium_mg
+      - confidence
+    sort:
+      - property: time
+        direction: ASC
+    summaries:
+      calories: Sum
+      protein_g: Sum
+      carbs_g: Sum
+      fat_g: Sum
+      fiber_g: Sum
+      sugar_g: Sum
+      sat_fat_g: Sum
+      sodium_mg: Sum
+  - type: table
+    name: Pending
+    filters:
+      and:
+        - status == "pending"
+    order:
+      - file.name
+      - date
+      - time
+    sort:
+      - property: file.name
+        direction: DESC

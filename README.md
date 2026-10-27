@@ -20,7 +20,7 @@ Copy everything inside the block below and paste it into a coding agent (Claude 
 Set up foodOS: a system-wide voice calorie counter (Option+Shift+F) that writes meal notes into an Obsidian vault on this Mac. Do every step yourself in the shell; do not tell me what to run. Stay on macOS only.
 
 Repo: https://github.com/cdiak/foodOS
-Install dir: ~/Development/Projects/foodOS (create parent dirs if needed)
+Source dir: ~/.local/src/foodOS unless I name another folder (create parent dirs if needed). It only holds the source to build from; install.sh copies everything it runs into ~/.local.
 Model path: ~/.cache/whisper/ggml-base.en.bin
 Binary: ~/.local/bin/foodos
 Config: ~/.config/foodos/config
@@ -40,20 +40,21 @@ Steps:
    - If ~/.config/foodos/config already exists, show its FOODOS_VAULT and FOODOS_FOLDER and offer to keep them.
    - Set FOODOS_VAULT to the absolute vault path and FOODOS_FOLDER to the folder.
 3. Clone
-   - If ~/Development/Projects/foodOS is already a git clone of this repo, git pull --ff-only origin main (or the default branch).
-   - If that path exists but is not this repo, move it to ~/Development/Projects/foodOS.bak.<timestamp>.
-   - Otherwise: git clone https://github.com/cdiak/foodOS.git ~/Development/Projects/foodOS
+   - Call the source dir SRC.
+   - If SRC is already a git clone of this repo, git pull --ff-only origin main (or the default branch).
+   - If SRC exists but is not this repo, move it to SRC.bak.<timestamp>.
+   - Otherwise: git clone https://github.com/cdiak/foodOS.git SRC
 4. whisper-cli
    - If whisper-cli is not on PATH, brew install whisper-cpp.
    - Resolve WHISPER_CLI to the full path of whisper-cli (command -v whisper-cli or $(brew --prefix)/bin/whisper-cli).
 5. Model (do not skip; foodOS does not ship weights)
-   - If a ggml-base.en.bin already exists from everywhisper or noteOS, reuse it and set WHISPER_MODEL to it.
+   - If a Whisper model already exists on this Mac, reuse it and set WHISPER_MODEL to it. Look with: find ~ -maxdepth 6 -name 'ggml-*.bin' -size +50M 2>/dev/null
    - Otherwise: mkdir -p ~/.cache/whisper and download with:
        curl -fL --retry 3 -o ~/.cache/whisper/ggml-base.en.bin \
          "https://huggingface.co/ggerganov/whisper.cpp/resolve/main/ggml-base.en.bin"
    - Verify the file exists and is a normal size (~142MB for base.en).
 6. Install
-   - cd ~/Development/Projects/foodOS
+   - cd SRC
    - FOODOS_VAULT="<vault>" FOODOS_FOLDER="<folder>" WHISPER_CLI="<path>" WHISPER_MODEL="<path>" ./install.sh
    - install.sh creates <vault>/<folder>/Meals, plus "Calorie Counter.base" and "Food profile.md" if they do not exist. It never overwrites them.
 7. Verify
@@ -82,7 +83,7 @@ After the agent finishes, allow **Microphone** when asked, then press **⌥⇧F*
 | Step | Result |
 |------|--------|
 | Vault question | you pick the vault and folder; saved in `~/.config/foodos/config` |
-| Clone / pull | `~/Development/Projects/foodOS` at latest `main` |
+| Clone / pull | `~/.local/src/foodOS` (or your folder) at latest `main` |
 | `brew install whisper-cpp` | `whisper-cli` on PATH |
 | `curl` model | `~/.cache/whisper/ggml-base.en.bin` (~142 MB, English), or reuses one you have |
 | `./install.sh` | builds `~/.local/bin/foodos`, seeds the vault folder, registers login LaunchAgent |
@@ -107,12 +108,12 @@ After the agent finishes, allow **Microphone** when asked, then press **⌥⇧F*
 ## Install by hand
 
 ```bash
-git clone https://github.com/cdiak/foodOS.git ~/Development/Projects/foodOS
-cd ~/Development/Projects/foodOS
+git clone https://github.com/cdiak/foodOS.git
+cd foodOS
 FOODOS_VAULT="$HOME/Notes" FOODOS_FOLDER="Nutrition" ./install.sh
 ```
 
-Run `./install.sh` with no `FOODOS_VAULT` to list your Obsidian vaults. Re-running it later reuses the saved vault. To move foodOS to another vault, run it again with a new `FOODOS_VAULT`.
+Clone it anywhere. The clone is only build source; `install.sh` copies the binary and assets into `~/.local`, so you can delete the clone afterward. Run `./install.sh` with no `FOODOS_VAULT` to list your Obsidian vaults. Re-running it later reuses the saved vault. To move foodOS to another vault, run it again with a new `FOODOS_VAULT`.
 
 ## The vault side
 

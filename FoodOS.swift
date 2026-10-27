@@ -57,7 +57,6 @@ struct Config {
         let model =
             env["WHISPER_MODEL"]
             ?? firstExisting([
-                "\(home.path)/dev/Models/whisper/ggml-base.en.bin",
                 "\(home.path)/models/whisper/ggml-base.en.bin",
                 "\(home.path)/.cache/whisper/ggml-base.en.bin",
                 "/opt/homebrew/share/whisper-cpp/ggml-base.en.bin",
@@ -94,7 +93,6 @@ struct Config {
             env["FOODOS_ORB_DIR"].map { URL(fileURLWithPath: $0) }
             ?? firstExisting([
                 "\(home.path)/.local/share/foodos/orb",
-                "\(home.path)/Development/Projects/foodOS/orb",
             ]).map { URL(fileURLWithPath: $0) }
 
         // Empty env values (e.g. an unset plist key) mean "not set".

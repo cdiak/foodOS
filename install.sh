@@ -77,6 +77,11 @@ fi
 launchctl bootout "gui/$(id -u)/${LABEL}" 2>/dev/null || true
 launchctl unload "$PLIST" 2>/dev/null || true
 
+# Tool paths: env → previous install → auto-detect below
+WHISPER_CLI="${WHISPER_CLI:-$(saved WHISPER_CLI)}"
+WHISPER_MODEL="${WHISPER_MODEL:-$(saved WHISPER_MODEL)}"
+CLAUDE_CLI="${CLAUDE_CLI:-$(saved CLAUDE_CLI)}"
+
 # Resolve whisper-cli: env → PATH → common Homebrew location
 if [[ -z "${WHISPER_CLI:-}" ]]; then
   if command -v whisper-cli >/dev/null 2>&1; then
@@ -91,8 +96,6 @@ if [[ -z "${WHISPER_MODEL:-}" ]]; then
   for candidate in \
     "${HOME}/.cache/whisper/ggml-base.en.bin" \
     "${HOME}/models/whisper/ggml-base.en.bin" \
-    "${HOME}/dev/Models/whisper/ggml-base.en.bin" \
-    "${HOME}/Development/Models/whisper/ggml-base.en.bin" \
     "/opt/homebrew/share/whisper-cpp/ggml-base.en.bin"
   do
     if [[ -f "$candidate" ]]; then

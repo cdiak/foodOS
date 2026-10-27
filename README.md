@@ -21,7 +21,7 @@ Set up foodOS: a system-wide voice calorie counter (Option+Shift+F) that writes 
 
 Repo: https://github.com/cdiak/foodOS
 Source dir: ~/.local/src/foodOS unless I name another folder (create parent dirs if needed). It only holds the source to build from; install.sh copies everything it runs into ~/.local.
-Model path: ~/.cache/whisper/ggml-base.en.bin
+Model path: ~/.cache/whisper/ggml-base.en.bin (unless a model already exists)
 Binary: ~/.local/bin/foodos
 Config: ~/.config/foodos/config
 LaunchAgent label: com.cdiak.foodos

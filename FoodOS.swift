@@ -57,11 +57,11 @@ struct Config {
         let model =
             env["WHISPER_MODEL"]
             ?? firstExisting([
-                "\(home.path)/models/whisper/ggml-base.en.bin",
                 "\(home.path)/.cache/whisper/ggml-base.en.bin",
+                "\(home.path)/models/whisper/ggml-base.en.bin",
                 "/opt/homebrew/share/whisper-cpp/ggml-base.en.bin",
             ])
-            ?? "\(home.path)/models/whisper/ggml-base.en.bin"
+            ?? "\(home.path)/.cache/whisper/ggml-base.en.bin"
 
         let claude =
             env["CLAUDE_CLI"]

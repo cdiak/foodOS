@@ -91,7 +91,7 @@ if [[ -z "${WHISPER_CLI:-}" ]]; then
   fi
 fi
 
-# Resolve a whisper model: env → common locations
+# Resolve a whisper model: env → saved config → common locations
 if [[ -z "${WHISPER_MODEL:-}" ]]; then
   for candidate in \
     "${HOME}/.cache/whisper/ggml-base.en.bin" \
